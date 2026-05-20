@@ -1,26 +1,27 @@
-# Access Control
+# Access Control Vulnerabilities
 
 Access Control is a fundamental security concept that ensures users can only access resources and perform actions they are authorized to do.
 
-## Overview
+This folder contains my PortSwigger Web Security Academy writeups related to Access Control vulnerabilities.
 
-Access Control mechanisms are essential for protecting sensitive information and maintaining system security. This section covers various aspects of access control vulnerabilities and best practices.
+## Labs Completed
+- Unprotected admin functionality
+- Unprotected admin functionality with unpredictable URL
+- User role controlled by request parameter
+- User role can be modified in user profile
+- URL-based access control bypass
+- Method-based access control bypass
+- Insecure direct object reference 
+- Referer based Access control 
 
-## Topics Covered
 
-- Role-Based Access Control (RBAC)
-- Attribute-Based Access Control (ABAC)
-- Broken Access Control vulnerabilities
-- Privilege Escalation
-- Unauthorized Access Prevention
-- Session Management
-
-## Common Vulnerabilities
-
-- **Broken Object Level Authorization (BOLA)** - Users can access resources they shouldn't
-- **Broken Function Level Authorization** - Users can perform unauthorized actions
-- **Privilege Escalation** - Users elevate their privileges beyond authorized levels
-- **Insecure Direct Object References (IDOR)** - Predictable object identifiers allow unauthorized access
+## Skills Learned
+- Privilege escalation
+- Horizontal access control bypass
+- Vertical access control bypass
+- Parameter manipulation
+- Forced browsing
+- Access control testing using Burp Suite
 
 ## Best Practices
 
