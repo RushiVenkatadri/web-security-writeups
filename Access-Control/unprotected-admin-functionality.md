@@ -58,65 +58,30 @@ role=admin  (attacker modifies this)
 - **Case Study 1:** Admin panel accessible at `/admin` with no authentication
 - **Case Study 2:** Admin API endpoints missing role verification
 - **Case Study 3:** Admin functions checking only session existence, not permissions
+    
+## PortSwigger Lab Walkthrough
 
-## Detection Methods
+### Objective
+Gain access to the admin panel and delete the user "carlos".
 
-1. **Manual Testing:**
-   - Try accessing `/admin`, `/administrator`, `/admin-panel`
-   - Check page source for hidden admin links
-   - Modify cookies/tokens to appear as admin
+### Steps Performed
+1. Logged into the lab application.
+2. Checked robots.txt and discovered hidden admin endpoint.
+3. Accessed `/administrator-panel`.
+4. Navigated to admin interface.
+5. Deleted the user "carlos".
+6. Lab marked as solved.
 
-2. **Automated Scanning:**
-   - Use tools like Burp Suite to identify admin endpoints
-   - Check for weak access control patterns
+### Impact
+Attackers can gain unauthorized administrative access and perform sensitive actions without authentication.
 
-3. **Code Review:**
-   - Search for missing authorization checks in admin functions
-   - Verify role-based access control implementation
+### Mitigation
+- Enforce server-side authorization checks
+- Restrict admin endpoints
+- Implement RBAC
+- Monitor unauthorized admin access attempts
 
-## Remediation
 
-### Best Practices
-
-1. **Implement Proper Authentication**
-   ```javascript
-   app.get('/admin/dashboard', (req, res) => {
-       if (!req.user || req.user.role !== 'admin') {
-           return res.status(403).send('Forbidden');
-       }
-       // Admin logic here
-   });
-   ```
-
-2. **Use Middleware for Authorization**
-   ```javascript
-   const requireAdmin = (req, res, next) => {
-       if (req.user && req.user.role === 'admin') {
-           next();
-       } else {
-           res.status(403).send('Forbidden');
-       }
-   };
-   
-   app.get('/admin/users', requireAdmin, (req, res) => {
-       // Admin function
-   });
-   ```
-
-3. **Principle of Least Privilege**
-   - Grant minimum required permissions
-   - Separate admin and user roles
-   - Use granular permissions
-
-4. **Audit and Logging**
-   - Log all admin access
-   - Monitor for unauthorized attempts
-   - Alert on suspicious activities
-
-5. **Regular Security Testing**
-   - Penetration testing
-   - Code reviews
-   - Automated security scans
 
 ## OWASP Reference
 
