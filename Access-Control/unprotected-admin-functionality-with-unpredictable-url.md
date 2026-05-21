@@ -1,0 +1,1 @@
+unprotected-admin-functionality-with-unpredictable-url.md
