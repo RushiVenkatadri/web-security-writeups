@@ -1,0 +1,1 @@
+# Stay-logged-in cookie
