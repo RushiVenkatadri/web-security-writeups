@@ -1,0 +1,155 @@
+# User ID Controlled by Request Parameter
+
+## Overview
+
+This lab demonstrates an insecure direct object reference (IDOR) vulnerability where user account information can be accessed by modifying a user-controlled request parameter.
+
+The application fails to verify whether the authenticated user is authorized to access the requested account.
+
+This vulnerability is a form of Broken Access Control.
+
+---
+
+## Vulnerability Description
+
+The application uses a request parameter to identify user accounts:
+
+```http
+GET /my-account?id=wiener
+```
+
+Since the server does not validate ownership of the requested account, attackers can manipulate the parameter value and access other users’ information.
+
+---
+
+## Lab Objective
+
+Obtain the API key for the user `carlos`.
+
+---
+
+## Steps Performed
+
+### 1. Login to the Application
+
+Logged into the lab using the provided credentials.
+
+---
+
+### 2. Navigate to "My Account"
+
+Observed the following request:
+
+```http
+GET /my-account?id=wiener HTTP/1.1
+```
+
+The application used the `id` parameter to determine which account information should be displayed.
+
+---
+
+### 3. Intercept the Request Using Burp Suite
+
+Captured the request using Burp Suite Repeater.
+
+Modified:
+
+```http
+id=wiener
+```
+
+to:
+
+```http
+id=carlos
+```
+
+Modified request:
+
+```http
+GET /my-account?id=carlos HTTP/1.1
+```
+
+---
+
+### 4. Access Carlos's Account Information
+
+Forwarded the modified request.
+
+The application returned Carlos's account details without performing proper authorization checks.
+
+Sensitive information including the API key was exposed.
+
+---
+
+### 5. Retrieve the API Key
+
+Copied the exposed API key from the response.
+
+Submitted the API key to complete the lab.
+
+Successfully solved the lab.
+
+---
+
+## Impact
+
+If exploited in real-world applications, attackers may:
+
+- Access sensitive user information
+- Retrieve API keys or tokens
+- Perform account takeover
+- Escalate privileges
+- Access confidential data
+- Compromise user privacy
+
+---
+
+## Root Cause
+
+The application trusted user-controlled request parameters without validating whether the authenticated user was authorized to access the requested account.
+
+Authorization checks were missing on the server side.
+
+---
+
+## Mitigation
+
+### Recommended Security Measures
+
+- Enforce strict server-side authorization checks
+- Validate ownership of requested resources
+- Use indirect object references
+- Implement Role-Based Access Control (RBAC)
+- Apply the principle of least privilege
+- Monitor unauthorized access attempts
+
+---
+
+## OWASP Reference
+
+- OWASP Top 10 (2021): A01 – Broken Access Control
+- CWE-639: Authorization Bypass Through User-Controlled Key
+
+---
+
+## Tools Used
+
+- Burp Suite
+- Burp Repeater
+- Browser Developer Tools
+- PortSwigger Web Security Academy
+
+---
+
+## Key Learning
+
+Applications must never trust user-controlled identifiers without validating authorization.
+
+Even simple parameter manipulation can lead to unauthorized access and sensitive data exposure.
+
+---
+
+## Disclaimer
+
+This writeup is intended for educational purposes and authorized security testing only.
