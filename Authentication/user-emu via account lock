@@ -1,0 +1,160 @@
+Username Enumeration via Account Lock
+
+Overview
+
+This lab demonstrates how an application's account lockout mechanism can unintentionally disclose valid usernames.
+
+The application locks accounts after multiple failed login attempts. However, the lockout behavior differs depending on whether the supplied username exists, allowing attackers to enumerate valid accounts.
+
+This vulnerability is a form of Information Disclosure and Broken Authentication.
+
+---
+
+Vulnerability Description
+
+Many applications implement account lockout policies to defend against brute-force attacks.
+
+A secure implementation should ensure that authentication responses remain consistent regardless of whether:
+
+- The username exists
+- The password is incorrect
+- The account is locked
+
+If different responses are returned for valid and invalid usernames, attackers can identify legitimate accounts and improve the effectiveness of credential attacks.
+
+---
+
+Lab Objective
+
+Identify a valid username and gain access to Carlos's account.
+
+---
+
+Steps Performed
+
+1. Analyze Login Functionality
+
+Navigated to the application's login page and observed the authentication workflow.
+
+Captured login requests using Burp Suite.
+
+Example request:
+
+POST /login HTTP/1.1
+
+username=test
+password=test123
+
+---
+
+2. Trigger Failed Login Attempts
+
+Performed multiple failed login attempts using different usernames.
+
+Observed the application's responses after repeated authentication failures.
+
+---
+
+3. Identify Account Lock Behavior
+
+After several failed attempts, the application returned a different response for valid usernames.
+
+Example behavior:
+
+Invalid username or password
+
+changed to:
+
+Account locked
+
+This revealed that the username existed within the application.
+
+Invalid usernames continued to produce generic authentication errors.
+
+---
+
+4. Enumerate Valid Username
+
+Repeated the process against multiple usernames until a valid account was identified.
+
+The account lockout response confirmed the existence of the target user.
+
+---
+
+5. Obtain Valid Credentials
+
+Using the identified username, performed further authentication testing to discover valid credentials.
+
+Once the correct password was identified, authentication succeeded.
+
+---
+
+6. Access Carlos's Account
+
+Successfully logged into Carlos's account.
+
+The lab was marked as solved.
+
+---
+
+Impact
+
+If exploited in a real-world application, attackers may:
+
+- Enumerate valid usernames
+- Improve brute-force attack efficiency
+- Conduct credential stuffing attacks
+- Target specific users
+- Increase the likelihood of account compromise
+
+---
+
+Root Cause
+
+The application returned different responses based on account state.
+
+Authentication behavior exposed whether a username existed within the system.
+
+---
+
+Mitigation
+
+Recommended Security Measures
+
+- Return identical authentication responses for all failures
+- Avoid disclosing account existence
+- Implement generic lockout messages
+- Apply rate limiting and monitoring
+- Log suspicious authentication activity
+- Use CAPTCHA where appropriate
+
+---
+
+OWASP Reference
+
+- OWASP Top 10 (2021): A07 – Identification and Authentication Failures
+- CWE-204: Observable Response Discrepancy
+- CWE-203: Observable Discrepancy
+
+---
+
+Tools Used
+
+- Burp Suite
+- Burp Intruder
+- Burp Repeater
+- PortSwigger Web Security Academy
+
+---
+
+Key Learning
+
+Account lockout mechanisms can become information disclosure vulnerabilities when they reveal differences between valid and invalid users.
+
+Authentication responses should remain consistent to prevent username enumeration attacks.
+
+---
+
+Disclaimer
+
+This writeup is intended for educational purposes and authorized security testing only.
