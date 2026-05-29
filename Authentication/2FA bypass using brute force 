@@ -1,0 +1,170 @@
+2FA Bypass Using a Brute-Force Attack
+
+Overview
+
+This lab demonstrates how weak implementation of Two-Factor Authentication (2FA) can allow attackers to brute-force verification codes and gain unauthorized access to user accounts.
+
+Although the application uses an additional authentication factor, the lack of sufficient protections against repeated verification attempts allows attackers to systematically guess valid codes.
+
+This vulnerability is a form of Broken Authentication.
+
+---
+
+Vulnerability Description
+
+Two-Factor Authentication is designed to strengthen account security by requiring users to provide an additional verification factor after entering valid credentials.
+
+A secure implementation should:
+
+1. Generate unpredictable verification codes
+2. Limit verification attempts
+3. Lock or expire verification sessions
+4. Detect brute-force activity
+5. Enforce rate limiting
+
+If these protections are absent, attackers may brute-force the verification code and bypass the second authentication factor.
+
+---
+
+Lab Objective
+
+Gain access to Carlos's account by brute-forcing the two-factor authentication code.
+
+---
+
+Steps Performed
+
+1. Login Using Known Credentials
+
+Authenticated using valid credentials and observed the application's two-factor authentication process.
+
+After successful username and password validation, the application requested a verification code.
+
+---
+
+2. Analyze 2FA Workflow
+
+Intercepted requests responsible for submitting the verification code.
+
+Observed a request similar to:
+
+POST /login2 HTTP/1.1
+
+mfa-code=1234
+
+The verification code was submitted separately from the primary authentication process.
+
+---
+
+3. Evaluate Brute-Force Protection
+
+Tested multiple incorrect verification codes.
+
+Observed that the application failed to:
+
+- Lock the account
+- Terminate the session
+- Introduce delays
+- Trigger additional verification controls
+
+This indicated insufficient brute-force protection.
+
+---
+
+4. Configure Automated Testing
+
+Sent the verification request to Burp Intruder.
+
+Configured a payload list containing possible verification codes and initiated automated testing.
+
+The attack targeted the:
+
+mfa-code
+
+parameter.
+
+---
+
+5. Identify Valid Verification Code
+
+Monitored responses for deviations in:
+
+- Response length
+- Status code
+- Redirect behavior
+- Successful authentication indicators
+
+One request produced a unique response indicating successful verification.
+
+---
+
+6. Access Carlos's Account
+
+Using the discovered verification code, successfully completed the authentication process.
+
+The lab was marked as solved.
+
+---
+
+Impact
+
+If exploited in a real-world application, attackers may:
+
+- Bypass Two-Factor Authentication
+- Compromise user accounts
+- Circumvent additional security controls
+- Access sensitive information
+- Escalate privileges
+- Achieve complete account takeover
+
+---
+
+Root Cause
+
+The application failed to implement sufficient protections against repeated verification attempts.
+
+The verification process lacked effective rate limiting, lockout mechanisms, and brute-force detection controls.
+
+---
+
+Mitigation
+
+Recommended Security Measures
+
+- Implement strict rate limiting for verification attempts
+- Lock accounts after repeated failures
+- Expire verification sessions after multiple incorrect codes
+- Introduce progressive delays between attempts
+- Use longer and less predictable verification codes
+- Monitor suspicious authentication activity
+- Require reauthentication after excessive failures
+
+---
+
+OWASP Reference
+
+- OWASP Top 10 (2021): A07 – Identification and Authentication Failures
+- CWE-307: Improper Restriction of Excessive Authentication Attempts
+
+---
+
+Tools Used
+
+- Burp Suite
+- Burp Intruder
+- Burp Repeater
+- PortSwigger Web Security Academy
+
+---
+
+Key Learning
+
+Two-Factor Authentication is only effective when supported by strong anti-brute-force protections.
+
+Even a secure second factor can be defeated if verification codes can be guessed repeatedly without restrictions.
+
+---
+
+Disclaimer
+
+This writeup is intended for educational purposes and authorized security testing only.
