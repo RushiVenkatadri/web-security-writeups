@@ -1,0 +1,74 @@
+Lab: High-Level Logic Vulnerability
+
+Description
+
+The application contains a business logic flaw that allows users to manipulate the intended workflow and obtain an unintended outcome.
+
+---
+
+Objective
+
+Exploit the application's business logic to purchase an item at a lower price than intended.
+
+---
+
+Vulnerability
+
+Business Logic Vulnerability
+
+---
+
+Steps
+
+Step 1: Login
+
+Login using the provided credentials.
+
+Step 2: Browse Products
+
+Navigate to the shop and add an expensive item to the cart.
+
+Step 3: Observe Requests
+
+Intercept requests using Burp Suite and identify:
+
+POST /cart
+POST /cart/checkout
+
+Step 4: Analyze Workflow
+
+Observe how the application calculates pricing and discounts.
+
+Step 5: Manipulate Logic
+
+Modify the workflow to apply discounts repeatedly or in an unintended sequence.
+
+Step 6: Checkout
+
+Proceed with checkout and verify that the product is purchased at an unintended price.
+
+---
+
+Impact
+
+Users can abuse business rules to obtain products below their intended cost.
+
+---
+
+Root Cause
+
+The application trusts workflow assumptions instead of validating business rules on the server side.
+
+---
+
+Remediation
+
+- Validate pricing server-side.
+- Prevent repeated discount application.
+- Recalculate final prices before checkout.
+
+---
+
+Key Takeaway
+
+Business logic vulnerabilities occur when applications assume users will follow the intended workflow instead of enforcing rules on the backend.
