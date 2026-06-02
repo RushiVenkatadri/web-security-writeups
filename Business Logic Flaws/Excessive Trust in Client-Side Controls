@@ -1,0 +1,196 @@
+# Excessive Trust in Client-Side Controls
+
+## Lab Overview
+
+This lab demonstrates a **Business Logic Vulnerability** where the application places excessive trust in values supplied by the client. Critical information such as product pricing is accepted directly from user-controlled requests without proper server-side validation.
+
+An attacker can intercept and modify these values to purchase expensive items at a significantly reduced price.
+
+**Lab:** Excessive Trust in Client-Side Controls  
+**Category:** Business Logic Vulnerabilities  
+**Difficulty:** Apprentice
+
+---
+
+## Objective
+
+Purchase the **Lightweight "l33t" Leather Jacket** using the available store credit by manipulating client-side parameters.
+
+---
+
+## Tools Used
+
+- Burp Suite Community Edition
+- Chromium Browser
+- PortSwigger Web Security Academy
+- Kali Linux
+
+---
+
+## Vulnerability Explanation
+
+The application trusts the price value submitted by the client during checkout.
+
+Since client-side data can be modified by an attacker, relying on it for business-critical decisions creates a serious security flaw.
+
+### Potential Impact
+
+- Product price manipulation
+- Financial losses
+- Abuse of discount mechanisms
+- Unauthorized purchases
+- Revenue leakage
+
+---
+
+## Methodology
+
+### Step 1: Add the Target Product to Cart
+
+Add the **Lightweight "l33t" Leather Jacket** to the shopping cart.
+
+The product normally costs more than the available store credit.
+
+---
+
+### Step 2: Intercept Purchase Request
+
+Using Burp Suite, intercept the checkout request responsible for processing the order.
+
+Observed the following client-controlled parameters:
+
+```http
+productId=1
+redir=PRODUCT
+quantity=10
+price=133700
+```
+
+The `price` parameter contains the product price and is supplied directly by the client.
+
+---
+
+### Step 3: Modify Price Parameter
+
+Change:
+
+```http
+price=133700
+```
+
+To:
+
+```http
+price=1
+```
+
+This reduces the product cost to almost nothing.
+
+---
+
+### Step 4: Forward Modified Request
+
+Send the modified request to the server.
+
+The application accepts the manipulated value and processes the order successfully.
+
+---
+
+### Step 5: Complete Purchase
+
+After forwarding the request, the order is completed using available store credit.
+
+The lab is marked as solved.
+
+---
+
+## Root Cause
+
+The application trusts security-sensitive data received from the client.
+
+Instead of calculating product pricing on the server, the application uses a user-controlled parameter.
+
+---
+
+## Secure Development Recommendations
+
+### Never Trust Client Input
+
+Any data received from a browser should be considered untrusted.
+
+### Validate Business Logic Server-Side
+
+Product prices must be retrieved from the server-side database instead of user requests.
+
+### Use Server-Side Pricing
+
+```text
+Client ---> Product ID
+
+Server ---> Lookup Product Price
+
+Server ---> Calculate Total Cost
+
+Server ---> Process Order
+```
+
+### Implement Integrity Checks
+
+Sensitive values should never be directly modifiable by users.
+
+---
+
+## Key Takeaways
+
+- Client-side controls are not security controls.
+- Attackers can modify any request sent by the browser.
+- Business logic vulnerabilities can lead to significant financial impact.
+- Critical calculations such as pricing must always be performed server-side.
+
+---
+
+## References
+
+- PortSwigger Web Security Academy
+- OWASP Business Logic Vulnerabilities
+- OWASP Secure Coding Practices
+
+---
+
+## Skills Practiced
+
+✅ Business Logic Vulnerabilities  
+✅ Price Tampering  
+✅ Parameter Manipulation  
+✅ Burp Suite Repeater  
+✅ HTTP Request Analysis  
+✅ Client-Side Trust Issues  
+✅ Secure Server-Side Validation
+
+---
+
+## Screenshots
+
+### Initial Cart View
+
+![Cart View](images/cart-view.png)
+
+### Modified Request in Burp Suite
+
+![Modified Request](images/burp-price-manipulation.png)
+
+### Lab Solved
+
+![Lab Solved](images/lab-solved.png)
+
+---
+
+## Repository
+
+🔗 https://github.com/RushiVenkatadri/web-security-writeups
+
+---
+
+**Author:** Rushi Venkatadri  
+**Platform:** PortSwigger Web Security Academy  
+**Status:** Lab Solved ✅
