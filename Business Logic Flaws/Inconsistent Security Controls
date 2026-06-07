@@ -1,0 +1,163 @@
+# 🔐 Inconsistent Security Controls
+
+## Lab Overview
+
+This lab demonstrates how inconsistent implementation of security controls can result in privilege escalation.
+
+The application restricts registration to users with an internal company email domain. However, the same restriction is not consistently enforced when users later update their account details.
+
+---
+
+## Objective
+
+Gain access to the administrator panel and delete the target user.
+
+---
+
+## Vulnerability Type
+
+- Access Control
+- Privilege Escalation
+- Business Logic Flaw
+
+---
+
+## Reconnaissance
+
+During registration, the application displayed the following requirement:
+
+> If you work for DontWannaCry, please use your @dontwannacry.com email address.
+
+This indicates that internal users are granted additional privileges based on their email domain.
+
+---
+
+## Step 1 – Register a New Account
+
+Created a normal user account using an attacker-controlled email address.
+
+```text
+Username: test1
+Email: attacker@exploit-server.net
+Password: ********
+```
+
+The application sent an email verification link.
+
+---
+
+## Step 2 – Verify Account
+
+Opened the exploit server mailbox and clicked the account verification link.
+
+The account was successfully activated.
+
+---
+
+## Step 3 – Access Account Settings
+
+After logging in, navigated to:
+
+```text
+My Account
+```
+
+Observed an option to update the registered email address.
+
+---
+
+## Step 4 – Change Email Domain
+
+Modified the email address from:
+
+```text
+attacker@exploit-server.net
+```
+
+to
+
+```text
+test@dontwannacry.com
+```
+
+The application accepted the change without validating whether the user should be allowed to use the internal company domain.
+
+---
+
+## Step 5 – Privilege Escalation
+
+After updating the email address, a new option appeared:
+
+```text
+Admin Panel
+```
+
+This confirmed that administrative access was being granted solely based on the email domain.
+
+---
+
+## Step 6 – Access Admin Panel
+
+Navigated to:
+
+```text
+/ admin
+```
+
+Successfully gained administrator privileges.
+
+---
+
+## Step 7 – Delete Target User
+
+Deleted the target user:
+
+```text
+carlos
+```
+
+Lab solved successfully.
+
+---
+
+## Root Cause
+
+The application enforced email-domain restrictions during registration but failed to apply the same validation when users updated their email addresses.
+
+This inconsistency allowed privilege escalation.
+
+---
+
+## Impact
+
+Such vulnerabilities can lead to:
+
+- Unauthorized administrative access
+- Privilege escalation
+- Account compromise
+- Data manipulation
+- User deletion
+- Business logic abuse
+
+---
+
+## Remediation
+
+- Apply security controls consistently across all workflows.
+- Revalidate sensitive attributes whenever they are modified.
+- Implement centralized authorization logic.
+- Never rely solely on user-controlled attributes for privilege decisions.
+
+---
+
+## Key Takeaway
+
+Security controls are only effective when they are enforced consistently throughout the application.
+
+A single validation gap can become a complete privilege escalation path.
+
+---
+
+## Status
+
+✅ Lab Solved
