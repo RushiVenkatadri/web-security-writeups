@@ -1,0 +1,245 @@
+# Flawed Enforcement of Business Rules – Coupon Stacking Abuse
+
+## Overview
+
+This writeup demonstrates a Business Logic Vulnerability where discount coupons can be applied multiple times due to flawed enforcement of business rules.
+
+The application provides:
+
+- `NEWCUST5` → $5 discount for new customers
+- `SIGNUP30` → 30% discount after newsletter signup
+
+The intended logic is that these coupons should only be applied under specific conditions and in a controlled manner. However, the application fails to properly enforce these restrictions, allowing coupon stacking and repeated discount application.
+
+As a result, an attacker can reduce the total purchase amount to $0 and obtain expensive products for free.
+
+---
+
+## Vulnerability Type
+
+- Business Logic Vulnerability
+- Flawed Enforcement of Business Rules
+- Coupon Abuse
+- Discount Stacking
+- Financial Impact
+
+---
+
+## Impact
+
+An attacker can:
+
+- Reuse discount coupons multiple times
+- Stack discounts beyond intended limits
+- Manipulate checkout calculations
+- Purchase products at extremely low cost
+- Obtain products completely free
+
+Real-world impact includes:
+
+- Revenue loss
+- Discount abuse
+- Inventory loss
+- Fraudulent purchases
+
+---
+
+## Lab Objective
+
+Purchase the Lightweight "l33t" Leather Jacket using flawed coupon validation and solve the lab.
+
+---
+
+## Reconnaissance
+
+Upon visiting the application, a banner reveals a coupon code:
+
+```text
+NEWCUST5
+```
+
+The application states that new customers can use this coupon at checkout.
+
+---
+
+## Step 1 – Newsletter Signup
+
+Scroll to the newsletter section and register using any email address.
+
+Example:
+
+```text
+test@gmail.com
+```
+
+After registration, a popup reveals another coupon:
+
+```text
+SIGNUP30
+```
+
+This coupon provides a 30% discount.
+
+---
+
+## Step 2 – Add Target Product
+
+Add the target item to the cart:
+
+```text
+Lightweight "l33t" Leather Jacket
+```
+
+Price:
+
+```text
+$1337.00
+```
+
+---
+
+## Step 3 – Apply Coupons
+
+Navigate to the cart page.
+
+Apply:
+
+```text
+SIGNUP30
+```
+
+The discount is successfully applied.
+
+Next apply:
+
+```text
+NEWCUST5
+```
+
+The discount is applied as well.
+
+At this stage both coupons coexist.
+
+---
+
+## Step 4 – Abuse Business Logic
+
+The application does not properly validate:
+
+- Coupon reuse
+- Coupon stacking restrictions
+- Maximum discount limits
+
+Continue applying:
+
+```text
+SIGNUP30
+NEWCUST5
+SIGNUP30
+NEWCUST5
+SIGNUP30
+NEWCUST5
+```
+
+The cart continues accepting discounts.
+
+---
+
+## Observed Behavior
+
+Discounts accumulate repeatedly:
+
+```text
+SIGNUP30  -$401.10
+NEWCUST5  -$5.00
+SIGNUP30  -$401.10
+NEWCUST5  -$5.00
+SIGNUP30  -$401.10
+NEWCUST5  -$5.00
+SIGNUP30  -$401.10
+```
+
+Final cart total:
+
+```text
+$0.00
+```
+
+---
+
+## Root Cause
+
+The application trusts that users will follow intended business rules.
+
+Missing validations include:
+
+- Single-use coupon enforcement
+- Coupon stacking prevention
+- Maximum discount threshold checks
+- Discount recalculation validation
+
+The backend processes coupons without verifying whether they have already been redeemed or combined with incompatible promotions.
+
+---
+
+## Security Lesson
+
+Business logic vulnerabilities often bypass traditional security controls.
+
+No SQL Injection.
+No XSS.
+No Authentication Bypass.
+
+Instead, attackers exploit flaws in application workflows and business assumptions.
+
+The most dangerous vulnerabilities are often those that abuse legitimate functionality in unintended ways.
+
+---
+
+## Remediation
+
+Developers should:
+
+### Enforce Single-Use Coupons
+
+Prevent reuse after redemption.
+
+### Restrict Coupon Combinations
+
+Define clear stacking rules.
+
+### Validate Discounts Server-Side
+
+Never trust client-side workflow assumptions.
+
+### Implement Maximum Discount Limits
+
+Prevent totals from becoming negative or zero unintentionally.
+
+### Audit Promotional Logic
+
+Review all discount and checkout workflows regularly.
+
+---
+
+## Key Takeaways
+
+- Business logic flaws can lead to severe financial impact.
+- Applications must enforce coupon restrictions on the server side.
+- Security testing should include workflow analysis, not just technical vulnerabilities.
+- Attackers frequently exploit business assumptions rather than software bugs.
+
+---
+
+## Conclusion
+
+This vulnerability demonstrates how weak business rule enforcement can allow attackers to manipulate promotional mechanisms and obtain expensive products for free.
+
+Although no traditional vulnerability was exploited, the application's flawed logic resulted in a complete bypass of intended purchasing restrictions, highlighting the importance of testing business workflows during security assessments.
+
+---
+
+**Repository:**  
+https://github.com/RushiVenkatadri/web-security-writeups
+
+**Category:** Business Logic Vulnerabilities
