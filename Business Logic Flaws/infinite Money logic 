@@ -1,0 +1,342 @@
+#(Infinite Money Logic)
+
+## Overview
+
+This write-up demonstrates a Business Logic Vulnerability where an application allows users to repeatedly abuse promotional coupons, resulting in an unintended financial impact.
+
+The vulnerability exists because the application fails to properly enforce business rules regarding coupon usage limits. By repeatedly applying discount codes, it becomes possible to reduce the total order value to zero and purchase expensive items without spending store credit.
+
+---
+
+## Vulnerability Type
+
+- Business Logic Vulnerability
+- Flawed Enforcement of Business Rules
+- Infinite Money Logic
+- Coupon Abuse
+
+---
+
+## Severity
+
+**High**
+
+### Impact
+
+- Financial Loss
+- Free Product Purchases
+- Abuse of Promotional System
+- Revenue Manipulation
+
+---
+
+## Objective
+
+Purchase the expensive Leather Jacket without spending available store credit by abusing the coupon functionality.
+
+---
+
+## Understanding the Business Logic
+
+The application provides two promotional coupons:
+
+| Coupon | Discount |
+|----------|----------|
+| NEWCUST5 | $5.00 |
+| SIGNUP30 | $401.10 |
+
+The intended behavior is:
+
+- New customers should use promotional codes once.
+- Discounts should be applied a limited number of times.
+- Total discount should never exceed product value.
+
+The application fails to enforce these restrictions.
+
+---
+
+## Vulnerability Analysis
+
+The backend does not properly validate:
+
+- Coupon reuse
+- Maximum discount limits
+- Coupon stacking restrictions
+- Business rule enforcement
+
+As a result:
+
+```text
+Apply Coupon
+      ↓
+Apply Again
+      ↓
+Apply Again
+      ↓
+Apply Again
+      ↓
+Unlimited Discounts
+```
+
+---
+
+## Exploitation Steps
+
+### Step 1: Register for Newsletter
+
+Navigate to the newsletter signup section.
+
+Enter any email address:
+
+```text
+test@gmail.com
+```
+
+Submit the form.
+
+---
+
+### Step 2: Obtain Signup Coupon
+
+After successful registration:
+
+```text
+SIGNUP30
+```
+
+is awarded.
+
+The coupon provides:
+
+```text
+$401.10 discount
+```
+
+---
+
+### Step 3: Add Target Product
+
+Add:
+
+```text
+Lightweight "l33t" Leather Jacket
+```
+
+to the cart.
+
+Price:
+
+```text
+$1337.00
+```
+
+---
+
+### Step 4: Apply Coupons Repeatedly
+
+Apply:
+
+```text
+SIGNUP30
+```
+
+multiple times.
+
+Apply:
+
+```text
+NEWCUST5
+```
+
+between uses.
+
+Example:
+
+```text
+SIGNUP30
+NEWCUST5
+SIGNUP30
+NEWCUST5
+SIGNUP30
+NEWCUST5
+SIGNUP30
+```
+
+---
+
+### Step 5: Observe Cart Manipulation
+
+Discounts accumulate:
+
+```text
+SIGNUP30  -$401.10
+NEWCUST5  -$5.00
+SIGNUP30  -$401.10
+NEWCUST5  -$5.00
+SIGNUP30  -$401.10
+NEWCUST5  -$5.00
+SIGNUP30  -$401.10
+```
+
+Final price becomes:
+
+```text
+$0.00
+```
+
+---
+
+### Step 6: Complete Purchase
+
+Click:
+
+```text
+Place Order
+```
+
+The order is accepted despite the product costing significantly more than available store credit.
+
+Lab solved.
+
+---
+
+## Root Cause
+
+The application trusts discount logic without enforcing proper business constraints.
+
+Missing validations:
+
+- One-time coupon enforcement
+- Duplicate coupon detection
+- Discount stacking restrictions
+- Maximum discount threshold
+- Product price floor validation
+
+---
+
+## Security Impact
+
+An attacker could:
+
+- Purchase expensive products for free
+- Abuse promotional campaigns
+- Cause direct financial losses
+- Manipulate pricing systems
+- Generate unauthorized discounts
+
+---
+
+## Example Business Rule Failure
+
+Expected:
+
+```text
+Coupon Used Once
+      ↓
+Coupon Invalid
+```
+
+Actual:
+
+```text
+Coupon Used
+      ↓
+Coupon Used Again
+      ↓
+Coupon Used Again
+      ↓
+Unlimited Discounts
+```
+
+---
+
+## Remediation
+
+### Enforce Single Use Coupons
+
+Track coupon redemption server-side.
+
+```text
+User → Coupon → Redeemed
+```
+
+---
+
+### Prevent Duplicate Application
+
+Reject already applied coupons.
+
+```text
+Coupon Already Applied
+```
+
+---
+
+### Restrict Coupon Stacking
+
+Define business limits.
+
+Example:
+
+```text
+Maximum 1 Promotional Coupon
+```
+
+---
+
+### Validate Total Discount
+
+Ensure:
+
+```text
+Total Discount ≤ Product Value
+```
+
+---
+
+### Implement Server-Side Checks
+
+Never rely solely on client-side controls.
+
+All discount validation must occur on the backend.
+
+---
+
+## Key Takeaways
+
+- Business Logic flaws often have severe real-world impact.
+- Financial abuse can occur without exploiting traditional technical vulnerabilities.
+- Applications must enforce business rules on the server side.
+- Coupon systems require strict validation and abuse prevention mechanisms.
+- Logic flaws can be just as dangerous as SQL Injection or XSS.
+
+---
+
+## Skills Practiced
+
+- Business Logic Testing
+- Coupon Abuse Testing
+- Financial Workflow Analysis
+- Authorization Review
+- Application Logic Assessment
+- Web Security Testing
+
+---
+
+## References
+
+- OWASP Business Logic Vulnerabilities
+- OWASP Top 10
+- PortSwigger Web Security Academy
+
+---
+
+## Author
+
+Rushi Venkatadri
+
+---
+
+### Disclaimer
+
+This write-up is intended for educational purposes and authorized security testing environments only.
